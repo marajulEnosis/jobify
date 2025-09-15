@@ -1,0 +1,13 @@
+{
+  "name": "jobify-server",
+  "version": "1.0.0",
+  "description": "Express server for handling CV uploads in Jobify application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": ["cv", "upload", "express", "jobify"],
+  "author": "",
+  "license": "MIT"
+}

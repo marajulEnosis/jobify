@@ -45,11 +45,11 @@ export default function JobsPage() {
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentJobs = filteredAndSortedJobs.slice(startIndex, endIndex);
 
-  // Handle adding new job
+
   const handleAddJob = (newJobData: Omit<Job, 'id' | 'dateApplied'>) => {
     const newJob: Job = {
       ...newJobData,
-      id: Date.now().toString(), // Use timestamp for unique ID
+      id: Date.now().toString(), 
       dateApplied: new Date().toISOString().split('T')[0]
     };
     const updatedJobs = jobsStorage.add(newJob);

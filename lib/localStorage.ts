@@ -75,3 +75,81 @@ export const initializeJobsData = (dummyJobs: Job[]): Job[] => {
   }
   return existingJobs;
 };
+
+// CV Storage functionality
+import { CV } from '@/types';
+
+const CV_STORAGE_KEY = 'jobify_cvs';
+
+export const cvStorage = {
+  save: (cvs: CV[]): void => {
+    try {
+      localStorage.setItem(CV_STORAGE_KEY, JSON.stringify(cvs));
+    } catch (error) {
+      console.error('Error saving CVs to localStorage:', error);
+    }
+  },
+
+  load: (): CV[] => {
+    try {
+      const stored = localStorage.getItem(CV_STORAGE_KEY);
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch (error) {
+      console.error('Error loading CVs from localStorage:', error);
+    }
+    return [];
+  },
+
+  add: (cv: CV): CV[] => {
+    const cvs = cvStorage.load();
+    const updatedCVs = [cv, ...cvs];
+    cvStorage.save(updatedCVs);
+    return updatedCVs;
+  },
+
+  update: (updatedCV: CV): CV[] => {
+    const cvs = cvStorage.load();
+    const updatedCVs = cvs.map(cv => 
+      cv.id === updatedCV.id ? updatedCV : cv
+    );
+    cvStorage.save(updatedCVs);
+    return updatedCVs;
+  },
+
+  delete: (cvId: string): CV[] => {
+    const cvs = cvStorage.load();
+    const updatedCVs = cvs.filter(cv => cv.id !== cvId);
+    cvStorage.save(updatedCVs);
+    return updatedCVs;
+  },
+
+  getById: (cvId: string): CV | undefined => {
+    const cvs = cvStorage.load();
+    return cvs.find(cv => cv.id === cvId);
+  },
+
+  setActive: (cvId: string): CV[] => {
+    const cvs = cvStorage.load();
+    const updatedCVs = cvs.map(cv => ({
+      ...cv,
+      isActive: cv.id === cvId
+    }));
+    cvStorage.save(updatedCVs);
+    return updatedCVs;
+  },
+
+  getActive: (): CV | undefined => {
+    const cvs = cvStorage.load();
+    return cvs.find(cv => cv.isActive);
+  },
+
+  clear: (): void => {
+    try {
+      localStorage.removeItem(CV_STORAGE_KEY);
+    } catch (error) {
+      console.error('Error clearing CVs from localStorage:', error);
+    }
+  }
+};;

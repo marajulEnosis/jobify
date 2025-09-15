@@ -35,6 +35,11 @@ const navigation = [
     name: 'Interviews',
     href: '/interviews',
     icon: CalendarDays
+  },
+  {
+    name: 'CV Arena',
+    href: '/cv-arena',
+    icon: User
   }
 ];
 
