@@ -30,16 +30,16 @@ export default function JobsPage() {
     sortOrder: 'desc'
   });
 
-  // Load jobs from localStorage on mount
+
   useEffect(() => {
     const loadedJobs = initializeJobsData(dummyJobs);
     setJobs(loadedJobs);
   }, []);
 
-  // Use the custom hook for filtering and sorting
+
   const filteredAndSortedJobs = useJobFiltering(jobs, filters);
 
-  // Pagination logic
+
   const totalPages = Math.ceil(filteredAndSortedJobs.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
@@ -54,29 +54,28 @@ export default function JobsPage() {
     };
     const updatedJobs = jobsStorage.add(newJob);
     setJobs(updatedJobs);
-    setCurrentPage(1); // Reset to first page when adding new job
+    setCurrentPage(1);
   };
 
-  // Handle editing a job
+
   const handleEditJob = (updatedJob: Job) => {
     const updatedJobs = jobsStorage.update(updatedJob);
     setJobs(updatedJobs);
     setSelectedJobId(null);
   };
 
-  // Handle deleting a job
+
   const handleDeleteJob = (jobId: string) => {
     const updatedJobs = jobsStorage.delete(jobId);
     setJobs(updatedJobs);
     setSelectedJobId(null);
   };
 
-  // Handle job card click
   const handleJobCardClick = (jobId: string) => {
     setSelectedJobId(jobId);
   };
 
-  // Handle filter reset
+
   const resetFilters = () => {
     setFilters({
       search: '',
@@ -88,14 +87,14 @@ export default function JobsPage() {
     setCurrentPage(1);
   };
 
-  // Handle page change
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
   return (
     <div className="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
-      {/* Sticky Header */}
+
       <StickyHeader
         filters={filters}
         setFilters={setFilters}
@@ -107,19 +106,18 @@ export default function JobsPage() {
         onAddJob={handleAddJob}
       />
 
-      {/* Content */}
+
       <div className="p-6 space-y-6">
-        {/* Active Filters Indicator */}
+
         <ActiveFilters filters={filters} resetFilters={resetFilters} />
 
-        {/* Jobs Grid */}
+   
         <JobsGrid 
           jobs={currentJobs} 
           onAddJob={handleAddJob}
           onJobClick={handleJobCardClick}
         />
 
-        {/* Job Details Modal */}
         <JobDetailsModal
           job={selectedJobId ? jobsStorage.getById(selectedJobId) || null : null}
           isOpen={!!selectedJobId}
@@ -128,7 +126,7 @@ export default function JobsPage() {
           onDelete={handleDeleteJob}
         />
 
-        {/* Pagination */}
+
         <JobsPagination
           currentPage={currentPage}
           totalPages={totalPages}

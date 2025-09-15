@@ -13,7 +13,7 @@ export function useJobFiltering(jobs: Job[], filters: JobFilters) {
       return matchesSearch && matchesType && matchesStatus;
     });
 
-    // Sort jobs
+
     filtered.sort((a, b) => {
       let aValue, bValue;
 

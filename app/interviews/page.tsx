@@ -12,13 +12,13 @@ export default function InterviewsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
 
-  // Load jobs from localStorage on component mount
+
   useEffect(() => {
     const loadedJobs = jobsStorage.load();
     setJobs(loadedJobs);
   }, []);
 
-  // Create calendar events from jobs with interview dates
+
   const calendarEvents = useMemo(() => {
     return jobs
       .filter(job => job.interviewDate && job.jobStatus === 'interview')
@@ -34,7 +34,7 @@ export default function InterviewsPage() {
       });
   }, [jobs]);
 
-  // Get upcoming interviews (next 7 days)
+
   const upcomingInterviews = useMemo(() => {
     const today = new Date();
     const nextWeek = new Date();
@@ -51,23 +51,22 @@ export default function InterviewsPage() {
 
   return (
     <div className="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
-      {/* Header */}
+
       <InterviewHeader />
 
       <div className="p-6 space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Upcoming Interviews Sidebar */}
+
           <div className="lg:col-span-1">
             <UpcomingInterviews 
               upcomingInterviews={upcomingInterviews}
               onInterviewSelect={handleEventSelect}
             />
 
-            {/* Selected Event Details */}
+
             <InterviewDetails selectedEvent={selectedEvent} />
           </div>
 
-          {/* Calendar */}
           <div className="lg:col-span-3">
             <InterviewCalendar 
               events={calendarEvents}

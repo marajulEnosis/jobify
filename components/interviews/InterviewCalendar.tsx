@@ -19,13 +19,13 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-// Define the event type for the calendar
+
 export interface CalendarEvent {
   id: string;
   title: string;
   start: Date;
   end: Date;
-  resource: any; // Job type
+  resource: any; 
 }
 
 interface InterviewCalendarProps {
