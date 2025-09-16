@@ -3,13 +3,13 @@
 import ActiveFilters from '@/components/jobs/ActiveFilters';
 import JobDetailsModal from '@/components/jobs/JobDetailsModal';
 import JobsGrid from '@/components/jobs/JobsGrid';
-import JobsPagination from '@/components/jobs/JobsPagination';
 import StickyHeader from '@/components/jobs/StickyHeader';
 import { dummyJobs } from '@/data/dummy-data';
+import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { useJobFiltering } from '@/hooks/useJobFiltering';
 import { initializeJobsData, jobsStorage } from '@/lib/localStorage';
 import { Job, JobFilters } from '@/types';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -19,7 +19,7 @@ const ITEMS_PER_PAGE = 6;
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [displayedJobsCount, setDisplayedJobsCount] = useState(ITEMS_PER_PAGE);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [filters, setFilters] = useState<JobFilters>({
@@ -39,12 +39,26 @@ export default function JobsPage() {
 
   const filteredAndSortedJobs = useJobFiltering(jobs, filters);
 
+  // Reset displayed jobs count when filters change
+  useEffect(() => {
+    setDisplayedJobsCount(ITEMS_PER_PAGE);
+  }, [filters]);
 
-  const totalPages = Math.ceil(filteredAndSortedJobs.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentJobs = filteredAndSortedJobs.slice(startIndex, endIndex);
+  const currentJobs = filteredAndSortedJobs.slice(0, displayedJobsCount);
+  const hasMoreJobs = displayedJobsCount < filteredAndSortedJobs.length;
 
+  const loadMoreJobs = useCallback(() => {
+    setTimeout(() => {
+      setDisplayedJobsCount(prev => prev + ITEMS_PER_PAGE);
+      setIsFetchingMore(false);
+    }, 500);
+  }, []);
+
+  const { loadMoreRef, isFetchingMore, setIsFetchingMore } = useInfiniteScroll(
+    hasMoreJobs,
+    loadMoreJobs,
+    { threshold: 0.5 }
+  );
 
   const handleAddJob = (newJobData: Omit<Job, 'id' | 'dateApplied'>) => {
     const newJob: Job = {
@@ -54,7 +68,7 @@ export default function JobsPage() {
     };
     const updatedJobs = jobsStorage.add(newJob);
     setJobs(updatedJobs);
-    setCurrentPage(1);
+    setDisplayedJobsCount(ITEMS_PER_PAGE);
   };
 
 
@@ -84,12 +98,7 @@ export default function JobsPage() {
       sortBy: 'dateApplied',
       sortOrder: 'desc'
     });
-    setCurrentPage(1);
-  };
-
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    setDisplayedJobsCount(ITEMS_PER_PAGE);
   };
 
   return (
@@ -116,6 +125,9 @@ export default function JobsPage() {
           jobs={currentJobs} 
           onAddJob={handleAddJob}
           onJobClick={handleJobCardClick}
+          loadMoreRef={loadMoreRef}
+          hasMoreJobs={hasMoreJobs}
+          isFetchingMore={isFetchingMore}
         />
 
         <JobDetailsModal
@@ -124,13 +136,6 @@ export default function JobsPage() {
           onClose={() => setSelectedJobId(null)}
           onEdit={handleEditJob}
           onDelete={handleDeleteJob}
-        />
-
-
-        <JobsPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
         />
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Job } from '@/types';
-import { Briefcase } from 'lucide-react';
+import { Briefcase, Loader2 } from 'lucide-react';
 import AddJobModal from './AddJobModal';
 import JobCard from './JobCard';
 
@@ -8,9 +8,19 @@ interface JobsGridProps {
   jobs: Job[];
   onAddJob: (job: Omit<Job, 'id' | 'dateApplied'>) => void;
   onJobClick?: (jobId: string) => void;
+  loadMoreRef?: (node: HTMLElement | null) => void;
+  hasMoreJobs?: boolean;
+  isFetchingMore?: boolean;
 }
 
-export default function JobsGrid({ jobs, onAddJob, onJobClick }: JobsGridProps) {
+export default function JobsGrid({ 
+  jobs, 
+  onAddJob, 
+  onJobClick, 
+  loadMoreRef, 
+  hasMoreJobs, 
+  isFetchingMore 
+}: JobsGridProps) {
   if (jobs.length === 0) {
     return (
       <Card className="text-center py-12 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
@@ -27,10 +37,31 @@ export default function JobsGrid({ jobs, onAddJob, onJobClick }: JobsGridProps) 
   }
 
   return (
-    <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {jobs.map((job) => (
-        <JobCard key={job.id} job={job} onClick={onJobClick} />
-      ))}
+    <div className="space-y-6">
+      <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {jobs.map((job) => (
+          <JobCard key={job.id} job={job} onClick={onJobClick} />
+        ))}
+      </div>
+      
+      {/* Infinite scroll trigger and loading indicator */}
+      {hasMoreJobs && (
+        <div className="flex justify-center py-6">
+          {isFetchingMore ? (
+            <div className="flex items-center gap-2 text-slate-600">
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span>Loading more jobs...</span>
+            </div>
+          ) : (
+            <div 
+              ref={loadMoreRef} 
+              className="h-10 flex items-center justify-center text-slate-500 text-sm"
+            >
+              Scroll to load more jobs
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
