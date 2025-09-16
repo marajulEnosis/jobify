@@ -17,15 +17,7 @@ import 'react-pdf/dist/Page/TextLayer.css';
 
 
 if (typeof window !== 'undefined') {
-  try {
-    pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-      'pdfjs-dist/build/pdf.worker.min.mjs',
-      import.meta.url,
-    ).toString();
-  } catch (e) {
-
     pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-  }
 }
 
 interface PDFViewerModalProps {
