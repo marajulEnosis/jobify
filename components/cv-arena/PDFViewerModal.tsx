@@ -10,12 +10,12 @@ import {
 import { CV } from '@/types';
 import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react';
 import { useCallback, useState } from 'react';
-// Import from react-pdf v10 main entry
+
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-// Configure PDF.js worker: use module URL so worker version matches API version
+
 if (typeof window !== 'undefined') {
   try {
     pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -23,7 +23,7 @@ if (typeof window !== 'undefined') {
       import.meta.url,
     ).toString();
   } catch (e) {
-    // As a last resort (not preferred), fall back to a public path if present
+
     pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
   }
 }
@@ -74,43 +74,6 @@ export default function PDFViewerModal({ isOpen, onClose, cv }: PDFViewerModalPr
     setScale(1.0);
   };
 
-  const handleDownload = async () => {
-    if (!cv) return;
-
-    try {
-      if (cv.serverFilename) {
-        // Download from server
-        const response = await fetch(`http://localhost:5000/api/download/${cv.serverFilename}`);
-        
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = cv.fileName;
-          link.style.display = 'none';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(url);
-        } else {
-          throw new Error('Failed to download file from server');
-        }
-      } else if (cv.fileContent) {
-        // Fallback: use stored base64 content for older entries
-        const link = document.createElement('a');
-        link.href = cv.fileContent;
-        link.download = cv.fileName;
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-    } catch (error) {
-      console.error('Download failed:', error);
-      alert('Download failed. The file might no longer be available.');
-    }
-  };
 
   const getPdfUrl = () => {
     if (!cv) return null;

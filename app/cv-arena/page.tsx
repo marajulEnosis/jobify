@@ -19,14 +19,13 @@ export default function CVArenaPage() {
   const [isPDFViewerOpen, setIsPDFViewerOpen] = useState(false);
   const [selectedCV, setSelectedCV] = useState<CV | null>(null);
 
-  // Load CVs from localStorage on component mount
+
   useEffect(() => {
     const loadedCVs = cvStorage.load();
     setCVs(loadedCVs);
     setFilteredCVs(loadedCVs);
   }, []);
 
-  // Filter CVs based on search term
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredCVs(cvs);
