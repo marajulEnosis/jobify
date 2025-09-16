@@ -6,14 +6,17 @@ import EditModal from '@/components/cv-arena/EditModal';
 import UploadModal from '@/components/cv-arena/UploadModal';
 import { cvStorage } from '@/lib/localStorage';
 import { CV } from '@/types';
+import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
 export default function CVArenaPage() {
+  const PDFViewerModal = dynamic(() => import('@/components/cv-arena/PDFViewerModal'), { ssr: false });
   const [cvs, setCVs] = useState<CV[]>([]);
   const [filteredCVs, setFilteredCVs] = useState<CV[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isPDFViewerOpen, setIsPDFViewerOpen] = useState(false);
   const [selectedCV, setSelectedCV] = useState<CV | null>(null);
 
   // Load CVs from localStorage on component mount
@@ -161,26 +164,9 @@ export default function CVArenaPage() {
     }
   };
 
-  const handleOpenInNewTab = (cv: CV) => {
-    try {
-      if (cv.serverFilename) {
-        // Open from server
-        const fileUrl = `http://localhost:5000/api/files/${cv.serverFilename}`;
-        window.open(fileUrl, '_blank', 'noopener,noreferrer');
-      } else if (cv.fileContent) {
-        // Fallback: use stored base64 content for older entries
-        const newWindow = window.open('', '_blank', 'noopener,noreferrer');
-        if (newWindow) {
-          newWindow.location.href = cv.fileContent;
-        }
-      } else {
-        // Show file path information
-        alert(`File path: ${cv.filePath}\nPlease check if the file exists at this location.`);
-      }
-    } catch (error) {
-      console.error('Failed to open file in new tab:', error);
-      alert('Failed to open file. The file might no longer be available.');
-    }
+  const handleViewPDF = (cv: CV) => {
+    setSelectedCV(cv);
+    setIsPDFViewerOpen(true);
   };
 
   return (
@@ -199,7 +185,7 @@ export default function CVArenaPage() {
           onDelete={handleDelete}
           onSetActive={handleSetActive}
           onDownload={handleDownload}
-          onOpenInNewTab={handleOpenInNewTab}
+          onViewPDF={handleViewPDF}
         />
 
         <UploadModal
@@ -215,6 +201,15 @@ export default function CVArenaPage() {
             setSelectedCV(null);
           }}
           onSave={handleSaveEdit}
+          cv={selectedCV}
+        />
+
+        <PDFViewerModal
+          isOpen={isPDFViewerOpen}
+          onClose={() => {
+            setIsPDFViewerOpen(false);
+            setSelectedCV(null);
+          }}
           cv={selectedCV}
         />
       </div>

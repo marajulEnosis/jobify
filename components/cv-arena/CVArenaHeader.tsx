@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CV } from '@/types';
 import {
-    FileText,
-    Search,
-    Star,
-    Upload
+  FileText,
+  Search,
+  Star,
+  Upload
 } from 'lucide-react';
 
 interface CVArenaHeaderProps {
@@ -117,14 +117,7 @@ export default function CVArenaHeader({
         )}
       </div>
 
-      {/* Quick Actions */}
-      {totalCVs > 0 && (
-        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-slate-100">
-          <Badge variant="secondary" className="text-xs">
-            💡 Pro tip: Use tags to organize CVs by industry or role
-          </Badge>
-        </div>
-      )}
+
     </div>
   );
 }

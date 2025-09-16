@@ -10,10 +10,10 @@ interface CVGridProps {
   onDelete: (cvId: string) => void;
   onSetActive: (cvId: string) => void;
   onDownload: (cv: CV) => void;
-  onOpenInNewTab: (cv: CV) => void;
+  onViewPDF: (cv: CV) => void;
 }
 
-export default function CVGrid({ cvs, onEdit, onDelete, onSetActive, onDownload, onOpenInNewTab }: CVGridProps) {
+export default function CVGrid({ cvs, onEdit, onDelete, onSetActive, onDownload, onViewPDF }: CVGridProps) {
   if (cvs.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -41,7 +41,7 @@ export default function CVGrid({ cvs, onEdit, onDelete, onSetActive, onDownload,
           onDelete={onDelete}
           onSetActive={onSetActive}
           onDownload={onDownload}
-          onOpenInNewTab={onOpenInNewTab}
+          onViewPDF={onViewPDF}
         />
       ))}
     </div>

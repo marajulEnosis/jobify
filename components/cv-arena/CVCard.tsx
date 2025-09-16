@@ -3,24 +3,18 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+
 import { CV } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
 import {
-    Calendar,
-    CheckCircle,
-    Download,
-    Edit,
-    ExternalLink,
-    File,
-    MoreHorizontal,
-    Star,
-    Trash2
+  Calendar,
+  CheckCircle,
+  Download,
+  Edit,
+  Eye,
+  File,
+  Star,
+  Trash2
 } from 'lucide-react';
 
 interface CVCardProps {
@@ -29,10 +23,10 @@ interface CVCardProps {
   onDelete: (cvId: string) => void;
   onSetActive: (cvId: string) => void;
   onDownload: (cv: CV) => void;
-  onOpenInNewTab: (cv: CV) => void;
+  onViewPDF: (cv: CV) => void;
 }
 
-export default function CVCard({ cv, onEdit, onDelete, onSetActive, onDownload, onOpenInNewTab }: CVCardProps) {
+export default function CVCard({ cv, onEdit, onDelete, onSetActive, onDownload, onViewPDF }: CVCardProps) {
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -171,22 +165,15 @@ export default function CVCard({ cv, onEdit, onDelete, onSetActive, onDownload, 
               <Trash2 className="h-4 w-4" />
             </Button>
             
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="text-slate-400 hover:text-slate-600">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem
-                  onClick={() => onOpenInNewTab(cv)}
-                  className="cursor-pointer"
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Open in New Tab
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onViewPDF(cv)}
+              className="text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50"
+              title="View PDF"
+            >
+              <Eye className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </CardFooter>

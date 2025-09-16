@@ -6,7 +6,6 @@ import {
     Briefcase,
     CalendarDays,
     Home,
-    LayoutDashboard,
     Menu,
     User,
     X
@@ -20,11 +19,6 @@ const navigation = [
     name: 'Home',
     href: '/',
     icon: Home
-  },
-  {
-    name: 'Dashboard',
-    href: '/dashboard',
-    icon: LayoutDashboard
   },
   {
     name: 'All Jobs',
